@@ -1,23 +1,11 @@
 CC=gcc
-CFLAGS=-I. -std=c11 -pthread
-SFLAGS=-lfactor -L.
-FPFlags=-fPIC -c
+CFLAGS=-I.
 
-all: client server
+all : multModule.c server.c client.c
+	gcc -c multModule.c -o multModule.o
+	gcc -shared multModule.o -o libmult.so
+	gcc server.c -L. -lmult -lpthread -o server
+	gcc client.c -L. -lmult -lpthread -o client
 
-again: clean all
-
-server: libfactor
-	$(CC) -o server server.c  $(CFLAGS) $(SFLAGS)
-
-client: libfactor
-	$(CC) -o client client.c  $(CFLAGS) $(SFLAGS)
-
-libfactor: factor.o
-	$(CC) -shared -o libfactor.so factor.o $(CFLAGS)
-
-factor.o: factorial.c factorial.h
-	$(CC) -o factor.o factorial.c $(CFLAGS) $(FPFlags)
-
-clean:
-	rm factor.o libfactor.so client server ips.md
+clean :
+	rm multModule.o libmult.so server client
