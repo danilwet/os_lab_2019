@@ -1,11 +1,16 @@
-CC=gcc
+CC=gcc -std=gnu99
 CFLAGS=-I.
 
-all : multModule.c server.c client.c
-	gcc -c multModule.c -o multModule.o
-	gcc -shared multModule.o -o libmult.so
-	gcc server.c -L. -lmult -lpthread -o server
-	gcc client.c -L. -lmult -lpthread -o client
+all: clsrv
 
-clean :
-	rm multModule.o libmult.so server client
+clsrv : lib
+	$(CC) client.c -L. -lmultmodulo -lpthread -o client
+	$(CC) server.c -L. -lmultmodulo -lpthread -o server
+	export LD_LIBRARY_PATH=/projects/vestrik-os/lab6/src/
+
+lib : 
+	$(CC) -c multmodulo.c -o multmodulo.o
+	$(CC) -shared multmodulo.o -o libmultmodulo.so 
+
+clean: 
+	rm client server server.o client.o libmultmodulo.so multmodulo.o
